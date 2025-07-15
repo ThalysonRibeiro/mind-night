@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Spinner className="text-indigo-500" size={100} variant='infinite' />
           <span className="text-gray-600">Loading...</span>
@@ -39,13 +39,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen">
+      <header className="border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Shield className="w-8 h-8 text-blue-600 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
+              <h1 className="text-xl font-semibold">Dashboard</h1>
             </div>
             <Button
               onClick={handleSignOut}
@@ -53,7 +53,7 @@ export default function Dashboard() {
               className="flex items-center space-x-2"
             >
               <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
+              <span>Sair</span>
             </Button>
           </div>
         </div>
@@ -62,11 +62,11 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="space-y-8">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome back, {session.user?.name?.split(' ')[0]}!
+            <h2 className="text-2xl font-bold mb-2">
+              Bem-vindo de volta,, {session.user?.name?.split(' ')[0]}!
             </h2>
             <p className="text-gray-600">
-              You're successfully authenticated. Here's your account information.
+              Você foi autenticado com sucesso. Aqui estão as informações da sua conta.
             </p>
           </div>
 
@@ -85,12 +85,12 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-4">
                   <Avatar className="w-16 h-16">
                     <AvatarImage src={session.user?.image || ''} alt="Profile" />
-                    <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
+                    <AvatarFallback className="text-blue-600 text-lg font-semibold">
                       {session.user?.name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold">
                       {session.user?.name}
                     </h3>
                     <div className="flex items-center text-gray-600 mt-1">
@@ -113,9 +113,9 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between p-3 rounded-lg border">
                   <span className="text-green-800 font-medium">Status</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 text-green-800 rounded-full text-sm font-medium">
                     Authenticated
                   </span>
                 </div>
@@ -143,7 +143,7 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-gray-100 rounded-lg p-4 font-mono text-sm">
+              <div className="rounded-lg p-4 font-mono text-sm">
                 <div className="text-gray-700 mb-2">POST /api/mobile-auth</div>
                 <div className="text-gray-600">
                   {'{'}
