@@ -1,3 +1,4 @@
+import { FAQ } from "@/components/faq";
 import { Features } from "@/components/features";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -18,6 +19,7 @@ export default function Home() {
         <div className="w-full">
           <Pricing />
           <Testimonials />
+          <FAQ />
           <Footer />
         </div>
       </main>

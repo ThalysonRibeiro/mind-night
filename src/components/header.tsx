@@ -63,11 +63,11 @@ export function Header() {
         </div>
 
         <ul className="flex space-x-4  items-center">
-          {['Inicio', 'Recursos', 'Preços', 'Testemunhos'].map(item => (
+          {['Inicio', 'Recursos', 'Preços', 'Testemunhos', 'FAQ'].map(item => (
             <li
               onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
               key={item}
-              className="font-semibold hover:text-yellow-500 transition-colors duration-300"
+              className="font-semibold hover:text-yellow-500 transition-colors duration-300 cursor-pointer"
             >
               {item}
             </li>
@@ -77,7 +77,7 @@ export function Header() {
               variant={"outline"}
               className="hover:border-purple-500 hover:bg-purple-500 transition-colors duration-300"
             >
-              <Link className="" href="/loginw">Entrar</Link>
+              <Link className="" href="/login">Entrar</Link>
             </Button>
           </li>
           <li>
@@ -85,7 +85,7 @@ export function Header() {
               variant={"outline"}
               className="hover:border-purple-500 hover:bg-purple-500 transition-colors duration-300"
             >
-              <Link href="/loginw">Começar Grátis</Link>
+              <Link href="/login">Começar Grátis</Link>
             </Button>
           </li>
         </ul>
@@ -106,20 +106,20 @@ export function Header() {
           <SheetHeader>
             <SheetTitle>Menu</SheetTitle>
           </SheetHeader>
-          {['Inicio', 'Recursos', 'Preços', 'Sobre'].map((item) => (
+          {['Inicio', 'Recursos', 'Preços', 'Testemunhos', 'FAQ'].map((item) => (
             <button
               key={item}
               onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
-              className="hover:text-purple-500 transition-colors text-left"
+              className="hover:text-purple-500 transition-colors text-left cursor-pointer"
             >
               {item}
             </button>
           ))}
           <Button variant={"outline"}>
-            <Link className="" href="/loginw">Entrar</Link>
+            <Link className="" href="/login">Entrar</Link>
           </Button>
           <Button variant={"outline"}>
-            <Link href="/loginw">Começar Grátis</Link>
+            <Link href="/login">Começar Grátis</Link>
           </Button>
         </SheetContent>
       </Sheet>
