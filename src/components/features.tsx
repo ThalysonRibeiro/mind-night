@@ -39,7 +39,7 @@ export function Features() {
 
 
   return (
-    <section id="recursos" className="container mx-auto px-4">
+    <section id="recursos">
       <div className="container mx-auto px-4 fade-section">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
