@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LogOut, User, Mail, Shield } from 'lucide-react'
+import { Spinner } from '@/components/ui/kibo-ui/spinner'
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -22,7 +23,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <Spinner className="text-indigo-500" size={100} variant='infinite' />
           <span className="text-gray-600">Loading...</span>
         </div>
       </div>

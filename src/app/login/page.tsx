@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import ParticlesBackground from '@/components/particlesBackground'
+import { Spinner } from '@/components/ui/kibo-ui/spinner'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -33,24 +35,25 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <ParticlesBackground />
+      <Card className="w-full max-w-md relative inset-0 bg-gray-900/50">
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-2xl font-bold">
-            Welcome Back
+            Bem vindo de volta
           </CardTitle>
           <CardDescription>
-            Sign in to your account using Google
+            Entre na sua conta usando o Google
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full h-12 shadow-sm transition-all duration-200"
+            className="w-full h-12 transition-all duration-200"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mr-2"></div>
+                <Spinner className="text-indigo-500" size={100} variant='infinite' />
                 Signing in...
               </div>
             ) : (
@@ -73,12 +76,12 @@ export default function Login() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                Continue with Google
+                Continue com o Google
               </div>
             )}
           </Button>
           <div className="text-center text-sm">
-            By signing in, you agree to our Terms of Service and Privacy Policy
+            Ao fazer login, você concorda com nossos Termos de Serviço e Política de Privacidade
           </div>
         </CardContent>
       </Card>
