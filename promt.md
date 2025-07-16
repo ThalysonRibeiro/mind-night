@@ -75,3 +75,78 @@ export async function POST(req: Request) {
   return new StreamingTextResponse(stream);
 }
 ````
+
+
+````json
+{
+  "symbols": ["água", "fogo", "escada"],
+  "meanings": {
+    "água": "Símbolo do inconsciente, emoções profundas.",
+    "fogo": "Transformação, paixão, destruição criativa.",
+    "escada": "Caminho entre estados de consciência ou evolução pessoal."
+  },
+  "patterns": "Conflito entre razão e emoção em momentos de mudança.",
+  "reflection": "Seu inconsciente está te pedindo coragem para atravessar um ciclo emocional importante."
+}
+
+````
+
+### atualizar jwt
+✅ Guardar o refresh_token do Google no usuário
+Isso é necessário para que você possa acessar o Google Drive mesmo depois que o access_token expirar.
+
+🛠️ Ajustes no jwt e signIn callbacks do NextAuth
+Vamos extrair e salvar o refresh_token e access_token do Google quando o usuário fizer login pela primeira vez.
+
+🔧 Atualize seu callback jwt():
+ts
+Copiar
+Editar
+async jwt({ token, account, user }) {
+  // Primeira vez que o usuário faz login
+  if (account && user) {
+    token.accessToken = account.access_token
+    token.refreshToken = account.refresh_token
+
+    // salva refreshToken no banco se existir
+    if (account.refresh_token) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          refreshToken: account.refresh_token,
+        },
+      })
+    }
+  }
+
+  return token
+}
+💡 Importante: o refresh_token só vem na primeira vez que o usuário autoriza, ou se você usar prompt=consent.
+
+✅ Passo adicional: forçar prompt=consent na URL do Google OAuth
+Para garantir que você sempre receba o refresh_token, mesmo se o usuário já autorizou antes.
+
+Atualize seu GoogleProvider assim:
+ts
+Copiar
+Editar
+GoogleProvider({
+  clientId: process.env.GOOGLE_CLIENT_ID!,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  authorization: {
+    params: {
+      scope: 'openid email profile https://www.googleapis.com/auth/drive.file',
+      access_type: 'offline',
+      prompt: 'consent',
+    },
+  },
+}),
+💾 O que será salvo no banco
+Se o refresh token estiver sendo salvo corretamente, o campo refreshToken no modelo User (já incluído na sua modelagem) será preenchido automaticamente no login inicial.
+
+🔐 Depois disso, como usar?
+Para fazer upload no Google Drive, você usará:
+
+O refreshToken salvo no User
+
+Trocar pelo access_token atualizado via https://oauth2.googleapis.com/token
