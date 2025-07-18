@@ -16,7 +16,7 @@ export default function Login() {
     const checkSession = async () => {
       const session = await getSession()
       if (session) {
-        router.push('/dashboard')
+        router.push('/diary')
       }
     }
     checkSession()
@@ -25,7 +25,7 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true)
-      await signIn('google', { callbackUrl: '/dashboard' })
+      await signIn('google', { callbackUrl: '/diary' })
     } catch (error) {
       console.error('Sign in error:', error)
     } finally {
