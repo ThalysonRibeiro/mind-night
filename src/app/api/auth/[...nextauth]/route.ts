@@ -18,19 +18,32 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, token }) {
-      // Add user id to session
       if (session.user && token.sub) {
-        session.user.id = token.sub
+        session.user.id = token.sub;
+        session.user.name = token.name || null;
+        session.user.email = token.email || null;
+        session.user.phone = typeof token.phone === 'string' ? token.phone : null;
       }
       return session
     },
-    async jwt({ token, account, }) {
-      // Persist the OAuth access_token to the token right after signin
-      if (account) {
-        token.accessToken = account.access_token
+    async jwt({ token, user }) {
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+        token.phone = user.phone;
+      } else {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { name: true, email: true, phone: true },
+        });
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+          token.phone = dbUser.phone;
+        }
       }
-      return token
-    },
+      return token;
+    }
   },
   session: {
     strategy: 'jwt',
