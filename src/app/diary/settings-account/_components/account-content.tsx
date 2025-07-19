@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Loader2, LoaderIcon, Save, User } from "lucide-react";
+import { Camera, Loader2, Save, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useFormUpdateUser } from "./use-update-user-form";
@@ -18,22 +18,48 @@ import {
 import { Input } from "@/components/ui/input";
 import { formatPhone } from "@/utils/fomatPhone";
 import { Button } from "@/components/ui/button";
+import { UpdateUserInput } from "@/lib/validators/schema-user";
+import { useUpdateUser } from "../hooks/useUpdateUser";
+import toast from 'react-hot-toast';
 
 export function AccountContent() {
-  const { data: session, status, update } = useSession();
+  const { data: session, update } = useSession();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const form = useFormUpdateUser();
+  const mutation = useUpdateUser();
 
   useEffect(() => {
     if (session?.user) {
       form.reset({
         name: session.user.name || '',
-        email: session.user.email || '',
         phone: session.user.phone || '',
       });
     }
   }, [session?.user, form]);
+
+
+  const handleSubmit = async (formData: UpdateUserInput) => {
+
+    try {
+      // setIsSubmitting(true);
+      // mutation.mutate(formData, {
+      //   onSettled: () => setIsSubmitting(false),
+      //   onSuccess: () => toast.success('Perfil atualizado!'),
+      //   onError: (err) => toast.error('Erro: ' + err.message),
+      // })
+      setIsSubmitting(true);
+      await mutation.mutate(formData);
+      await update();
+      toast.success('Atualizado com sucesso!');
+    } catch (err) {
+      console.log(err);
+
+      toast.error('Erro ao atualizar');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!session?.user) {
     return null;
@@ -46,7 +72,7 @@ export function AccountContent() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><User /> Informações Pessoais</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="flex items-center gap-4 mb-4">
             <div className="relative">
               {session.user.image ? (
@@ -74,104 +100,78 @@ export function AccountContent() {
             </div>
           </div>
 
+          <div>
+            <p>Email: <span className="text-gray-400">{session.user.email}</span></p>
+          </div>
 
           <Form {...form}>
-            <form className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field, fieldState }) => {
-                  const inputId = "name-input";
-                  const descriptionId = "name-description";
-                  const errorId = "name-error";
+            <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field, fieldState }) => {
+                    const inputId = "name-input";
+                    const descriptionId = "name-description";
+                    const errorId = "name-error";
 
-                  return (
-                    <FormItem>
-                      <FormLabel htmlFor={inputId}>Nome</FormLabel>
-                      <FormControl>
-                        <Input
-                          id={inputId}
-                          placeholder="Digite seu nome"
-                          aria-describedby={descriptionId}
-                          aria-invalid={fieldState.invalid ? "true" : "false"}
-                          aria-errormessage={fieldState.error ? errorId : undefined}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription id={descriptionId}>Atualizar nome</FormDescription>
-                      {fieldState.error && (
-                        <FormMessage id={errorId}>{fieldState.error.message}</FormMessage>
-                      )}
-                    </FormItem>
-                  );
-                }}
-              />
+                    return (
+                      <FormItem>
+                        <FormLabel htmlFor={inputId}>Nome</FormLabel>
+                        <FormControl>
+                          <Input
+                            id={inputId}
+                            placeholder="Digite seu nome"
+                            aria-describedby={descriptionId}
+                            aria-invalid={fieldState.invalid ? "true" : "false"}
+                            aria-errormessage={fieldState.error ? errorId : undefined}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription id={descriptionId}>Atualizar nome</FormDescription>
+                        {fieldState.error && (
+                          <FormMessage id={errorId}>{fieldState.error.message}</FormMessage>
+                        )}
+                      </FormItem>
+                    );
+                  }}
+                />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field, fieldState }) => {
-                  const inputId = "email-input";
-                  const descriptionId = "email-description";
-                  const errorId = "email-error";
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field, fieldState }) => {
+                    const inputId = "phone-input";
+                    const descriptionId = "phone-description";
+                    const errorId = "phone-error";
 
-                  return (
-                    <FormItem>
-                      <FormLabel htmlFor={inputId}>E-mail</FormLabel>
-                      <FormControl>
-                        <Input
-                          id={inputId}
-                          type="email"
-                          placeholder="Digite seu e-mail"
-                          aria-describedby={descriptionId}
-                          aria-invalid={fieldState.invalid ? "true" : "false"}
-                          aria-errormessage={fieldState.error ? errorId : undefined}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription id={descriptionId}>Atualizar e-mail</FormDescription>
-                      {fieldState.error && (
-                        <FormMessage id={errorId}>{fieldState.error.message}</FormMessage>
-                      )}
-                    </FormItem>
-                  );
-                }}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field, fieldState }) => {
-                  const inputId = "phone-input";
-                  const descriptionId = "phone-description";
-                  const errorId = "phone-error";
-
-                  return (
-                    <FormItem>
-                      <FormLabel htmlFor={inputId}>Telefone</FormLabel>
-                      <FormControl>
-                        <Input
-                          id={inputId}
-                          type="tel"
-                          placeholder="Digite seu telefone"
-                          aria-describedby={descriptionId}
-                          aria-invalid={fieldState.invalid ? "true" : "false"}
-                          aria-errormessage={fieldState.error ? errorId : undefined}
-                          {...field}
-                          onChange={(e) => {
-                            const formattedValue = formatPhone(e.target.value);
-                            field.onChange(formattedValue);
-                          }}
-                        />
-                      </FormControl>
-                      <FormDescription id={descriptionId}>Atualizar telefone</FormDescription>
-                      {fieldState.error && (
-                        <FormMessage id={errorId}>{fieldState.error.message}</FormMessage>
-                      )}
-                    </FormItem>
-                  );
-                }}
-              />
+                    return (
+                      <FormItem>
+                        <FormLabel htmlFor={inputId}>Telefone</FormLabel>
+                        <FormControl>
+                          <Input
+                            id={inputId}
+                            type="tel"
+                            placeholder="Digite seu telefone"
+                            aria-describedby={descriptionId}
+                            aria-invalid={fieldState.invalid ? "true" : "false"}
+                            aria-errormessage={fieldState.error ? errorId : undefined}
+                            {...field}
+                            onChange={(e) => {
+                              const formattedValue = formatPhone(e.target.value);
+                              field.onChange(formattedValue);
+                            }}
+                          />
+                        </FormControl>
+                        <FormDescription id={descriptionId}>Atualizar telefone</FormDescription>
+                        {fieldState.error && (
+                          <FormMessage id={errorId}>{fieldState.error.message}</FormMessage>
+                        )}
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
 
               <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting} className="w-full" size={"lg"}>
                 {isSubmitting

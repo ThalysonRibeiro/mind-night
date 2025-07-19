@@ -1,3 +1,4 @@
+"use client"
 import { UpdateUserInput, updateUserSchema } from "@/lib/validators/schema-user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,7 +12,6 @@ export function useFormUpdateUser({ initialValues }: UseFormUpdateUserProps = {}
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
       name: initialValues?.name ?? '',
-      email: initialValues?.email ?? '',
       phone: initialValues?.phone ?? '',
     },
   })
