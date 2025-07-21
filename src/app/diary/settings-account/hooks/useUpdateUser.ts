@@ -11,7 +11,7 @@ export function useUpdateUser() {
 
   return useMutation({
     mutationFn: async (formData: UpdateUserInput) => {
-      const { data } = await api.patch('/user/update', formData);
+      const { data } = await api.patch('/api/user/update', formData);
       return data;
     },
     onSuccess(_, variables,) {
