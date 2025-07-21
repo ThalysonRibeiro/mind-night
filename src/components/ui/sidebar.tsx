@@ -268,7 +268,7 @@ function SidebarTrigger({
       variant="outline"
       size="icon"
       className={cn("size-7 absolute z-10  top-10", className,
-        isMobile ? "right-0" : "-left-3"
+        isMobile ? "right-5 top-5" : "-left-3"
       )}
       onClick={(event) => {
         onClick?.(event)
