@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 import { z } from 'zod'
+import { getEnv } from '@/lib/env';
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+const env = await getEnv();
+
+const client = new OAuth2Client(env.GOOGLE_CLIENT_ID)
 
 const bodySchema = z.object({
   idToken: z.string(),
@@ -25,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: env.GOOGLE_CLIENT_ID,
     })
 
     const payload = ticket.getPayload() as GoogleTokenPayload
@@ -50,7 +53,7 @@ export async function POST(request: NextRequest) {
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24h
     }
 
-    const token = jwt.sign(jwtPayload, process.env.MY_APP_JWT_SECRET!, {
+    const token = jwt.sign(jwtPayload, env.MY_APP_JWT_SECRET!, {
       algorithm: 'HS256',
     })
 
