@@ -2,21 +2,25 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req });
+  const pathname = req.nextUrl.pathname;
 
-  if (!token) {
-    return NextResponse.redirect(new URL('/login', req.url));
+  // Lógica de proteção de rotas da aplicação (diary e admin)
+  if (pathname.startsWith('/diary') || pathname.startsWith('/admin')) {
+    const token = await getToken({ req });
+
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+
+    if (pathname.startsWith('/admin') && token.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    }
   }
-
-  const isAdminRoute = req.nextUrl.pathname.startsWith('/admin');
-
-  if (isAdminRoute && token.role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/unauthorized', req.url)); // ou /dashboard etc.
-  }
+  console.log(`Middleware executed for path: ${pathname}`);
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/diary/:path*'], // protege múltiplas rotas
+  matcher: ['/admin/:path*', '/diary/:path*', '/api/auth/:path*'],
 };
